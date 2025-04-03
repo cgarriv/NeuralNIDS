@@ -1,0 +1,17 @@
+Uncaught (in promise) Error: Map container not found.
+    _initContainer https://unpkg.com/leaflet/dist/leaflet.js:5
+    initialize https://unpkg.com/leaflet/dist/leaflet.js:5
+    e https://unpkg.com/leaflet/dist/leaflet.js:5
+    map https://unpkg.com/leaflet/dist/leaflet.js:5
+    loadMap file:///home/kali/Downloads/nidsproject-main/website/index.js:96
+    <anonymous> file:///home/kali/Downloads/nidsproject-main/website/index.js:125
+leaflet.js:5:38528
+Source map error: Error: NetworkError when attempting to fetch resource.
+Resource URL: https://unpkg.com/leaflet/dist/leaflet.js
+Source Map URL: leaflet.js.map
+Source map error: request failed with status 404
+Resource URL: https://cdn.jsdelivr.net/npm/chart.js
+Source Map URL: chart.umd.js.map
+Source map error: NetworkError when attempting to fetch resource.
+Resource URL: https://unpkg.com/leaflet/dist/leaflet.js
+Source Map URL: leaflet.js.map
