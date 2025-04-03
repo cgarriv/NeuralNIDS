@@ -6,20 +6,41 @@ let alertActive = false;
 const BASE_URL = "http://10.10.10.100:5000"; // Change this when you need to change all URLs
 
 async function fetchMLAlerts() {
-    const res = await fetch(`${BASE_URL}/api/live-alerts`);
-    const alerts = await res.json();
-    const mlTable = document.getElementById("ml-alert-table");
-    mlTable.innerHTML = "";
+    console.log("🔁 Fetching ML Alerts...");
 
-    alerts.slice(-10).reverse().forEach(entry => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${new Date(entry.timestamp).toLocaleString()}</td>
-            <td>${entry.label}</td>
-            <td>${entry.confidence.toFixed(4)}</td>
-        `;
-        mlTable.appendChild(row);
-    });
+    try {
+        const res = await fetch(`${BASE_URL}/api/live-alerts`);
+        const alerts = await res.json();
+        console.log("📦 Received ML alerts:", alerts);
+
+        const mlTable = document.getElementById("ml-alert-table");
+
+        if (!mlTable) {
+            console.warn("⚠️ Could not find element: #ml-alert-table");
+            return;
+        }
+
+        mlTable.innerHTML = "";
+
+        alerts.slice(-10).reverse().forEach(entry => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${new Date(entry.timestamp).toLocaleString()}</td>
+                <td>${entry.label}</td>
+                <td>${parseFloat(entry.confidence).toFixed(4)}</td>
+            `;
+            mlTable.appendChild(row);
+        });
+
+        if (alerts.length === 0) {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td colspan="3">No ML alerts detected yet.</td>`;
+            mlTable.appendChild(row);
+        }
+
+    } catch (err) {
+        console.error("❌ Error fetching ML alerts:", err);
+    }
 }
 
 function toggleDarkMode() {
@@ -140,6 +161,7 @@ async function sendEmailAlert() {
 
 fetchDashboardData();
 loadMap();
+console.log("✅ Starting ML Alerts Fetch Loop...");
 fetchMLAlerts();
 setInterval(fetchMLAlerts, 5000);
 setInterval(() => {
