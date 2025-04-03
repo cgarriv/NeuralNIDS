@@ -22,26 +22,29 @@ async function fetchMLAlerts() {
 
         mlTable.innerHTML = "";
 
+        if (alerts.length === 0) {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td colspan="3">No ML alerts detected yet.</td>`;
+            mlTable.appendChild(row);
+            return;
+        }
+
+        // Show only the latest 10 alerts, refreshed
         alerts.slice(-10).reverse().forEach(entry => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${new Date(entry.timestamp).toLocaleString()}</td>
+                <td>${new Date(entry.timestamp + "Z").toLocaleString()}</td>
                 <td>${entry.label}</td>
                 <td>${parseFloat(entry.confidence).toFixed(4)}</td>
             `;
             mlTable.appendChild(row);
         });
 
-        if (alerts.length === 0) {
-            const row = document.createElement("tr");
-            row.innerHTML = `<td colspan="3">No ML alerts detected yet.</td>`;
-            mlTable.appendChild(row);
-        }
-
     } catch (err) {
         console.error("❌ Error fetching ML alerts:", err);
     }
 }
+
 
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
