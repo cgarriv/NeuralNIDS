@@ -5,7 +5,7 @@ let mapMarkers = [];
 let alertActive = false;
 const BASE_URL = "http://10.10.10.100:5000"; // Change this when you need to change all URLs
 
-let lastFetchedTimestamp = null;
+let lastKnownMLTimestamp = null;
 
 async function fetchMLAlerts() {
     console.log("Fetching ML Alerts...");
@@ -14,45 +14,46 @@ async function fetchMLAlerts() {
         const res = await fetch(`${BASE_URL}/api/live-alerts`);
         const alerts = await res.json();
 
-        // Skip update if no new alerts
-        if (
-            alerts.length > 0 &&
-            lastFetchedTimestamp === alerts[alerts.length - 1].timestamp
-        ) {
-            console.log("No new ML alerts. Skipping update.");
-            return;
-        }
-
-        lastFetchedTimestamp = alerts.length > 0 ? alerts[alerts.length - 1].timestamp : null;
-
         const mlTable = document.getElementById("ml-alert-table");
         if (!mlTable) {
-            console.warn("Could not find element: #ml-alert-table");
+            console.warn("Could not find #ml-alert-table");
             return;
         }
 
+        // Clear table every time to prevent buildup
         mlTable.innerHTML = "";
 
-        if (alerts.length === 0) {
+        if (!alerts.length) {
             const row = document.createElement("tr");
             row.innerHTML = `<td colspan="3">No ML alerts detected yet.</td>`;
             mlTable.appendChild(row);
-        } else {
-            alerts.slice(-10).reverse().forEach(entry => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${new Date(entry.timestamp).toLocaleString()}</td>
-                    <td>${entry.label}</td>
-                    <td>${parseFloat(entry.confidence).toFixed(4)}</td>
-                `;
-                mlTable.appendChild(row);
-            });
+            return;
         }
+
+        // Reverse to show newest on top
+        const recentAlerts = alerts.slice(-10).reverse();
+
+        recentAlerts.forEach(entry => {
+            const timestamp = new Date(entry.timestamp).toLocaleString(undefined, {
+                year: "numeric", month: "2-digit", day: "2-digit",
+                hour: "2-digit", minute: "2-digit", second: "2-digit",
+                hour12: false
+            });
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${timestamp}</td>
+                <td>${entry.label}</td>
+                <td>${parseFloat(entry.confidence).toFixed(4)}</td>
+            `;
+            mlTable.appendChild(row);
+        });
 
     } catch (err) {
         console.error("[X] Error fetching ML alerts:", err);
     }
 }
+
 
 
 
