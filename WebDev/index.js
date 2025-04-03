@@ -159,19 +159,21 @@ async function sendEmailAlert() {
     }
 }
 
-fetchDashboardData();
-loadMap();
-console.log("✅ Starting ML Alerts Fetch Loop...");
-fetchMLAlerts();
-setInterval(fetchMLAlerts, 5000);
-setInterval(() => {
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("✅ DOM ready. Initializing dashboard...");
+
     fetchDashboardData();
     loadMap();
-}, 5000);
+    fetchMLAlerts();
 
-setInterval(() => {
-    if (alertActive) {
-        alertActive = false;
-        clearAlert();
-    }
-}, 5000)
+    setInterval(fetchDashboardData, 5000);
+    setInterval(loadMap, 5000);
+    setInterval(fetchMLAlerts, 5000);
+
+    setInterval(() => {
+        if (alertActive) {
+            alertActive = false;
+            clearAlert();
+        }
+    }, 5000);
+});
