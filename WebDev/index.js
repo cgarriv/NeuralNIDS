@@ -8,7 +8,7 @@ const BASE_URL = "http://10.10.10.100:5000"; // Change this when you need to cha
 let lastFetchedTimestamp = null;
 
 async function fetchMLAlerts() {
-    console.log("🔁 Fetching ML Alerts...");
+    console.log("Fetching ML Alerts...");
 
     try {
         const res = await fetch(`${BASE_URL}/api/live-alerts`);
@@ -19,7 +19,7 @@ async function fetchMLAlerts() {
             alerts.length > 0 &&
             lastFetchedTimestamp === alerts[alerts.length - 1].timestamp
         ) {
-            console.log("⚠️ No new ML alerts. Skipping update.");
+            console.log("No new ML alerts. Skipping update.");
             return;
         }
 
@@ -27,7 +27,7 @@ async function fetchMLAlerts() {
 
         const mlTable = document.getElementById("ml-alert-table");
         if (!mlTable) {
-            console.warn("⚠️ Could not find element: #ml-alert-table");
+            console.warn("Could not find element: #ml-alert-table");
             return;
         }
 
@@ -50,7 +50,7 @@ async function fetchMLAlerts() {
         }
 
     } catch (err) {
-        console.error("❌ Error fetching ML alerts:", err);
+        console.error("[X] Error fetching ML alerts:", err);
     }
 }
 
