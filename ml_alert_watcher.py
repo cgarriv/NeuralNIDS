@@ -62,6 +62,17 @@ def tail_eve_and_predict():
 
                 if "Probability" in result and "Label" in result:
                     print(f"[+] ML Prediction: {result['Label']} (Confidence: {result['Probability']})")
+                    if "Probability" in result and "Label" in result:
+                        print(f"[+] ML Prediction: {result['Label']} (Confidence: {result['Probability']})")
+
+                        # 🔥 NEW: Log to JSONL file for frontend
+                        with open(ML_ALERT_LOG, "a") as log:
+                            log.write(json.dumps({
+                                "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                                "label": result["Label"],
+                                "confidence": result["Probability"]
+                            }) + "\n")
+
                 else:
                     print(f"[X] ML Prediction failed: {result.get('Error', 'Unknown error')}")
 
